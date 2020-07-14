@@ -20,7 +20,10 @@ This app was originally generated on Tue Jun 02 2020 11:05:34 GMT+0530 (India St
 ## Working
 
 ```
+npm install sails -g
+cd Change_Management_Tool-Backend
 sails lift 
+
 ```
 
 
