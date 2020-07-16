@@ -1,4 +1,4 @@
-# goalsintern
+# Change Management Tool- Backend
 
 a [Sails v1](https://sailsjs.com) application
 
@@ -15,6 +15,18 @@ a [Sails v1](https://sailsjs.com) application
 ### Version info
 
 This app was originally generated on Tue Jun 02 2020 11:05:34 GMT+0530 (India Standard Time) using Sails v1.2.4.
+
+
+## Working
+
+```
+npm install sails -g
+cd Change_Management_Tool-Backend
+sails lift 
+
+```
+
+
 
 <!-- Internally, Sails used [`sails-generate@1.17.2`](https://github.com/balderdashy/sails-generate/tree/v1.17.2/lib/core-generators/new). -->
 
