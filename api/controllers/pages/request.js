@@ -35,7 +35,7 @@ module.exports = {
 
 
   fn: async function (inputs,exits) {
-
+   
       async.auto({
         createnewrequest : async (next) => {
             try {
@@ -71,6 +71,19 @@ module.exports = {
           }
 
         }],
+
+        // mailtrigger: ['requestupdate', async(NewRequest,next)=> {
+        //   try{
+        //     console.log(NewRequest);
+        //     return next(null, "sd");
+        //   }
+        //   catch(err){
+        //     console.log(err)
+        //     return (err);
+        //   }
+
+        // }],
+
       }, (err, asyncresults) => {
   
           if (err) {

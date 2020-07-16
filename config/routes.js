@@ -26,7 +26,7 @@ module.exports.routes = {
 
   'POST /changepassword': { action: 'pages/changepassword' },
   
-  'POST /request': { action: 'pages/request' },
+  'GET /request': { action: 'pages/request' },
 
   'POST /sentrequests': { action: 'pages/sentrequests' },
 

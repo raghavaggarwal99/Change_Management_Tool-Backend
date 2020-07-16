@@ -17,8 +17,7 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  // Bypass the `is-logged-in` policy for:
-  'pages/request': 'is-logged-in',
+  // 'pages/request': 'is-logged-in',
 
   'pages/sentrequests': 'is-logged-in',
 

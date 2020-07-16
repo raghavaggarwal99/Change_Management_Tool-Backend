@@ -13,7 +13,7 @@ module.exports = {
     currentId: {
       type: 'number',
       example: 1,
-      description: 'Id of a person who submitted that request',
+      description: 'Id of a person who is logged in to check which request he/she will see',
       required: true
     },
   },
@@ -40,6 +40,11 @@ module.exports = {
         id: user.ParentId
     });
 
+    //If parent exists, we will check 
+    // 1. Whether Current logged in id of that of parent, If i create a request that will be visible to Sahil that if
+    // 2. Or in case of Sahil, request created by him will current logged in id, he has to approve level 1 right and same case aage if 
+    // 3. 3rd is if i create a request, it will be shown to anshuman also
+    //Here if anshuman creates a request, it is already handled that first it's status becomes"Level1Approved", then if level1 approved hai, then level2 vaala 2nd case ho jaayega
     if(userparent){
         if(user.ParentId==inputs.currentId || inputs.userid==inputs.currentId || userparent.ParentId==inputs.currentId){
           return 1;
