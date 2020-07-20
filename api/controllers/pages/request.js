@@ -57,12 +57,13 @@ module.exports = {
 
              if(Array.isArray(UserRecord) && UserRecord.length){
 
-              let  UserRecord= await Request.update({ id: NewRequest.createnewrequest.id })
+
+              let  UserRecord= await Request.update({ id: NewRequest.createnewrequest[0].id })
               .set({
                   status: "Level1Approve",
               });
 
-              let Log=  await LogEntry(NewRequest.createnewrequest.id, "Level1Approve", this.req.userId);
+              let Log=  await LogEntry(NewRequest.createnewrequest[0].id, "Level1Approve", this.req.userId);
              }
 
              return next(null, UserRecord)
@@ -156,7 +157,7 @@ async function LogEntry(NewRequestId, Status, UserId){
 
   let Log = await Logs.create(_.extend({
     userId: UserId,
-    RequestId:NewRequestId,
+    RequestId : NewRequestId,
     Action: Status,
     TimeStamp:  new Date()
   },{})).fetch();

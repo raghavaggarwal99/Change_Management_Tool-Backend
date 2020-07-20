@@ -38,6 +38,7 @@ module.exports = {
   
     fn: async function (inputs) {
     
+      let dict= {};
 
       async.auto({
         changerequeststatus : async (next) => {
@@ -74,6 +75,75 @@ module.exports = {
         mailtrigger: ['changerequeststatus', async(NewRequest,next) => {
           try{
            
+            console.log(NewRequest)
+
+            let Status= NewRequest.changerequeststatus[0].status;
+
+            let user = await User.findOne({
+              id: NewRequest.changerequeststatus[0].userId,
+            });
+
+            let StatusRecords= await Statusoutlinemapping.find({
+              initialstatus: Status,
+            });
+            
+            for (const StatusRecord of StatusRecords){
+
+              let PermissionStatus= StatusRecord.finalstatus;
+
+              let ShownUsers= await Permission.find({
+                  Feature : PermissionStatus,
+                  id: user.ParentId,
+
+              });
+
+              console.log(ShownUsers);
+
+              if(Array.isArray(ShownUsers) && ShownUsers.length){
+                
+                for(const ShownUser of ShownUsers){
+                  let UserRecord= await User.findOne({
+                    id: ShownUser.userId,
+                  });
+
+                  if(!dict[UserRecord.emailAddress]){
+                    await Notification.sendMail(UserRecord); 
+                    dict[UserRecord.emailAddress]= 1
+                  }
+                }
+              }
+              else{
+
+                let user = await User.findOne({
+                  id: this.req.userId,
+                });
+
+                let ShownUsers= await Permission.find({
+                  Feature : PermissionStatus,
+                  id: user.ParentId,
+
+                });
+
+                if(Array.isArray(ShownUsers) && ShownUsers.length){
+                
+                  for(const ShownUser of ShownUsers){
+                    let UserRecord= await User.findOne({
+                      id: ShownUser.userId,
+                    });
+  
+                    if(!dict[UserRecord.emailAddress]){
+                      await Notification.sendMail(UserRecord); 
+                      dict[UserRecord.emailAddress]= 1
+                    }
+                  }
+                }
+
+              }
+
+            }
+
+            return next(null, "sd");
+
           }
 
           catch(err){
