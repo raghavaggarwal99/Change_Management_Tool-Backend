@@ -40,7 +40,9 @@ module.exports = {
         createnewrequest : async (next) => {
             try {
               let NewRequest = await CreateRequest(inputs, this.req.userId);
+
               let Log=  await LogEntry(NewRequest.id, "Pending", this.req.userId);
+
               return next(null, NewRequest, Log)
             }
             catch(err){
@@ -54,6 +56,7 @@ module.exports = {
             let UserRecord= await FindUser("Level2Approve", this.req.userId);
 
              if(Array.isArray(UserRecord) && UserRecord.length){
+
               let  UserRecord= await Request.update({ id: NewRequest.createnewrequest.id })
               .set({
                   status: "Level1Approve",
@@ -72,17 +75,54 @@ module.exports = {
 
         }],
 
-        // mailtrigger: ['requestupdate', async(NewRequest,next)=> {
-        //   try{
-        //     console.log(NewRequest);
-        //     return next(null, "sd");
-        //   }
-        //   catch(err){
-        //     console.log(err)
-        //     return (err);
-        //   }
+        mailtrigger: ['requestupdate', async(NewRequest,next)=> {
+          try{
 
-        // }],
+
+            let Status= NewRequest.createnewrequest[0].status;
+
+            let user = await User.findOne({
+              id: NewRequest.createnewrequest[0].userId,
+            });
+
+            let StatusRecords= await Statusoutlinemapping.find({
+              initialstatus: Status,
+            });
+            
+            for (const StatusRecord of StatusRecords){
+
+              let PermissionStatus= StatusRecord.finalstatus;
+
+              let ShownUsers= await Permission.find({
+                  Feature : PermissionStatus,
+                  id: user.ParentId,
+
+              });
+
+              console.log(ShownUsers);
+
+              if(Array.isArray(ShownUsers) && ShownUsers.length){
+                
+                for(const ShownUser of ShownUsers){
+                  let UserRecord= await User.findOne({
+                    id: ShownUser.userId,
+                  });
+
+                  await Notification.sendMail(UserRecord); 
+                }
+              }
+
+            }
+
+            return next(null, "sd");
+
+          }
+          catch(err){
+            console.log(err)
+            return (err);
+          }
+
+        }],
 
       }, (err, asyncresults) => {
   

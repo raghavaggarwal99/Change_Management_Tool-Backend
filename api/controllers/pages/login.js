@@ -41,6 +41,8 @@ module.exports = {
 
     // Look up by the email address.
 
+ 
+
     let UserRecord = await User.findOne({
       emailAddress: inputs.EmailAddress,
       password: sha256(inputs.Password).toString()
@@ -55,6 +57,7 @@ module.exports = {
 
 
     return this.res.json(200, {User: UserRecord, token: Token});
+
 
   }
 

@@ -90,14 +90,16 @@ module.exports = {
           
       }
 
-      console.log(Start);
+      // console.log(Start);
 
       let totalPages= await getPages(FinalRequests, PerPage);
+
+      // console.log(totalPages)
 
       //This is returning the records accrding to the pagination
       FinalRequests= Object.entries(FinalRequests).slice(Start,Start+PerPage).map(entry => entry[1]);
 
-      return this.res.json(200, {users: FinalUsers, requests: FinalRequests, userdetails: UserDetails, totalPages: totalPages});
+      return this.res.json(200, {users: FinalUsers, requests: FinalRequests, userdetails: UserDetails, totalPages: totalPages, PerPage: PerPage});
 
     }
   
@@ -116,7 +118,7 @@ async function getPages(FinalRequests, PerPage){
 
   }
 
-  return totalPages
+  return totalPages;
 
 
 }

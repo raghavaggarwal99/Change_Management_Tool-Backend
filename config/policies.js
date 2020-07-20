@@ -17,7 +17,7 @@ module.exports.policies = {
   *                                                                          *
   ***************************************************************************/
 
-  // 'pages/request': 'is-logged-in',
+  'pages/request': 'is-logged-in',
 
   'pages/sentrequests': 'is-logged-in',
 
