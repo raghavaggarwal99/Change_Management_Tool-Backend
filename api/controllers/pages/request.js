@@ -144,6 +144,7 @@ async function CreateRequest(inputs, UserId){
 
   let NewRequest = await Request.create(_.extend({
     info: inputs.Info,
+    description: inputs.Description,
     status: "Pending",
     userId: UserId,
   },{})).fetch();

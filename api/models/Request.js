@@ -1,7 +1,8 @@
 /**
- * User.js
+ * Request.js
  *
- * A user who can log in to this application.
+ * A request created by the user
+ * 
  */
 
 module.exports = {
@@ -26,6 +27,14 @@ module.exports = {
         example: 'Pending'
     },
 
+    description: {
+      type: 'string',
+      required: true,
+      description: 'Description of the created request',
+      maxLength: 100,
+      example: 'Pending'
+    },
+
     userId: {
         type: 'Number',
         required: true,
@@ -37,7 +46,7 @@ module.exports = {
       defaultsTo: false,
       description: 'Whether the request is Deleted or not',
       example: '1'
-  },
+    },
 
   
     },
