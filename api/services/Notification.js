@@ -2,7 +2,7 @@
 
 module.exports.sendMail = function(UserRecord) {
     sails.hooks.email.send(
-        "welcomeEmail",
+        "notificationEmail",
         {
             Name:'Helloooooo',
             link: "http://localhost:8080/#/resetpassword",
