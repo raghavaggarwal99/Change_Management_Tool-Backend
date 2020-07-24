@@ -1,11 +1,10 @@
 
-
-module.exports.sendMail = function(UserRecord) {
+module.exports.statusmail = function(UserRecord, Request) {
     sails.hooks.email.send(
-        "notificationEmail",
+        "NotifyStatus",
         {
             Name:'Helloooooo',
-            link: "http://localhost:8080/#/resetpassword",
+            Content: Request.status,
             
         },
         {
@@ -24,7 +23,3 @@ module.exports.sendMail = function(UserRecord) {
         }
     )
 };
-
-//Sort by created and updated at in dashboard table 
-//Request Dialog automatic close after 
-//CLose button in right top corner

@@ -35,6 +35,9 @@ module.exports = {
 
 
   fn: async function (inputs,exits) {
+
+   
+    let maildictionary= {}
    
       async.auto({
         createnewrequest : async (next) => {
@@ -53,50 +56,101 @@ module.exports = {
 
         requestupdate: ['createnewrequest', async(NewRequest,next) => {
           try{
-            let UserRecord= await FindUser("Level2Approve", this.req.userId);
 
-             if(Array.isArray(UserRecord) && UserRecord.length){
+              let UserRecord= await FindUser("Level2Approve", this.req.userId);
 
+                if(Array.isArray(UserRecord) && UserRecord.length){
 
-              let  UserRecord= await Request.update({ id: NewRequest.createnewrequest[0].id })
-              .set({
-                  status: "Level1Approve",
-              });
+                  let UserDetails= await User.findOne({id: this.req.userId});
 
-              let Log=  await LogEntry(NewRequest.createnewrequest[0].id, "Level1Approve", this.req.userId);
-             }
+                  if(UserDetails.Role=="DepartmentHead"){
+                    await Request.update({ id: NewRequest.createnewrequest[0].id })
+                    .set({
+                        status: "Level2Approve",
+                    });
 
-             return next(null, UserRecord)
+                    await LogEntry(NewRequest.createnewrequest[0].id, "Level2Approve", this.req.userId);
+                  
+                  }
+                }
+
+            return next(null, UserRecord)
+
           }
 
           catch(err){
             console.log(err);
             return next(err);
           }
-
+         
         }],
 
-        mailtrigger: ['requestupdate', async(NewRequest,next)=> {
+        requestupdate2: ['createnewrequest', async(NewRequest,next) => {
+          try{
+              
+            let UserRecord= await FindUser("Level1Approve", this.req.userId);
+
+              if(Array.isArray(UserRecord) && UserRecord.length){
+
+                  let UserDetails= await User.findOne({id: this.req.userId});
+
+                  // console.log(UserDetails.ParentId);
+                  // console.log(UserDetails);
+
+                  let UserParentDetails= await User.findOne({id: UserDetails.ParentId});
+
+                  // console.log(UserParentDetails.Role);
+                  // console.log(UserParentDetails);
+
+                  if(UserParentDetails.Role == "DepartmentHead"){
+                      await Request.update({ id: NewRequest.createnewrequest[0].id })
+                      .set({
+                          status: "Level1Approve",
+                      });
+
+                      await LogEntry(NewRequest.createnewrequest[0].id, "Level1Approve", this.req.userId);
+                  }
+              }
+
+            return next(null, UserRecord)
+
+          }
+
+          catch(err){
+            console.log(err);
+            return next(err);
+          }
+         
+        }],
+
+        mailtrigger: ['requestupdate' , 'requestupdate2',  async(NewRequest,next)=> {
           try{
 
+            let RequestDetails = await Request.findOne({id: NewRequest.createnewrequest[0].id})
 
-            let Status= NewRequest.createnewrequest[0].status;
+            // let Status= await NewRequest.createnewrequest[0].status;
+
+            console.log(RequestDetails.status)
 
             let user = await User.findOne({
               id: NewRequest.createnewrequest[0].userId,
             });
 
+            console.log(user.ParentId);
+
             let StatusRecords= await Statusoutlinemapping.find({
-              initialstatus: Status,
+              initialstatus: RequestDetails.status,
             });
             
             for (const StatusRecord of StatusRecords){
 
               let PermissionStatus= StatusRecord.finalstatus;
 
+              console.log(PermissionStatus)
+
               let ShownUsers= await Permission.find({
                   Feature : PermissionStatus,
-                  id: user.ParentId,
+                  userId: user.ParentId,
 
               });
 
@@ -109,13 +163,16 @@ module.exports = {
                     id: ShownUser.userId,
                   });
 
-                  await Notification.sendMail(UserRecord); 
+                  if(maildictionary[ShownUsers.userId]!=1){
+                    await Notification.sendMail(UserRecord); 
+                    maildictionary[ShownUsers.userId]=1;
+                  }
                 }
               }
 
             }
 
-            return next(null, "sd");
+            return next(null, "Mail Sent");
 
           }
           catch(err){
@@ -163,8 +220,6 @@ async function LogEntry(NewRequestId, Status, UserId){
     TimeStamp:  new Date()
   },{})).fetch();
 
-  return Log; 
-
 };
 
 async function FindUser(Status, UserId){
@@ -177,3 +232,5 @@ async function FindUser(Status, UserId){
     return UserRecord; 
 
 };
+
+

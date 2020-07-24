@@ -52,9 +52,15 @@ module.exports = {
         description: 'Parent Id',
         example: '1'
     },
+
+    Role: {
+        type: 'string',
+        required: true,
+        description: 'Role of this User',
+        example: 'Developer'
+    },
   
   },
   
   
   };
-  

@@ -47,57 +47,108 @@ module.exports = {
        //It contains User details, who have created this request
       let UserDetails= {}
 
-      
-      for (const RequestRecord of RequestRecords) {
-        var Status= RequestRecord.status;
 
-        FinalUsers[RequestRecord.id] = new Array();
+      let checkIt= await User.findOne({id: this.req.userId});
 
-          var StatusRecords= await Statusoutlinemapping.find({
-              initialstatus: Status,
-          });
+      if(checkIt.Role=="IT"){
 
-          for (const StatusRecord of StatusRecords){
+        for (const RequestRecord of RequestRecords) {
 
-              var PermissionStatus= StatusRecord.finalstatus;
-              
-              var ShownUsers= await Permission.find({
-                    Feature : PermissionStatus,
-                    userId: this.req.userId,
-                })
-                var obj ={}
-                var check= await sails.helpers.checkparent.with({userid: RequestRecord.userId, currentId: this.req.userId})
+          var Status= RequestRecord.status;
 
-                if (Array.isArray(ShownUsers) && ShownUsers.length && check==1){
+          FinalUsers[RequestRecord.id] = new Array();
 
-                  obj["requestId"]=RequestRecord.id;
-                  obj["requestinfo"]=await Request.find({id:RequestRecord.id});
+            var StatusRecords= await Statusoutlinemapping.find({
+                initialstatus: Status,
+            });
 
-                  FinalRequests[RequestRecord.id] = new Array();
-                 
+            for (const StatusRecord of StatusRecords){
 
-                    if(Object.keys(obj).length !== 0){
-                     
-                      FinalRequests[RequestRecord.id]= (obj)
-                      FinalUsers[RequestRecord.id].push(ShownUsers);
-                      UserDetails[RequestRecord.userId]= await User.find({id:RequestRecord.userId});
-
-                    }
-                  
-                }
+                var PermissionStatus= StatusRecord.finalstatus;
                 
-          }
-          
+                var ShownUsers= await Permission.find({
+                      Feature : PermissionStatus,
+                      userId: this.req.userId,
+                  })
+
+                  var obj ={}
+  
+                  if (Array.isArray(ShownUsers) && ShownUsers.length){
+
+                    obj["requestId"]=RequestRecord.id;
+                    obj["requestinfo"]=await Request.find({id:RequestRecord.id});
+
+                    FinalRequests[RequestRecord.id] = new Array();
+                  
+
+                      if(Object.keys(obj).length !== 0){
+                      
+                        FinalRequests[RequestRecord.id]= (obj)
+                        FinalUsers[RequestRecord.id].push(ShownUsers);
+                        UserDetails[RequestRecord.userId]= await User.find({id:RequestRecord.userId});
+
+                      }
+                    
+                  }
+            }
+            
+        }
+
       }
+
+      else{
+        for (const RequestRecord of RequestRecords) {
+          var Status= RequestRecord.status;
+
+          FinalUsers[RequestRecord.id] = new Array();
+
+            var StatusRecords= await Statusoutlinemapping.find({
+                initialstatus: Status,
+            });
+
+            for (const StatusRecord of StatusRecords){
+
+                var PermissionStatus= StatusRecord.finalstatus;
+                
+                var ShownUsers= await Permission.find({
+                      Feature : PermissionStatus,
+                      userId: this.req.userId,
+                  })
+
+                  var obj ={}
+
+                  var check= await sails.helpers.checkparent.with({userid: RequestRecord.userId, currentId: this.req.userId})
+
+                  if (Array.isArray(ShownUsers) && ShownUsers.length && check==1){
+
+                    obj["requestId"]=RequestRecord.id;
+                    obj["requestinfo"]=await Request.find({id:RequestRecord.id});
+
+                    FinalRequests[RequestRecord.id] = new Array();
+                  
+
+                      if(Object.keys(obj).length !== 0){
+                      
+                        FinalRequests[RequestRecord.id]= (obj)
+                        FinalUsers[RequestRecord.id].push(ShownUsers);
+                        UserDetails[RequestRecord.userId]= await User.find({id:RequestRecord.userId});
+
+                      }
+                    
+                  }
+            }
+            
+        }
+    }
 
       // console.log(Start);
 
       let totalPages= await getPages(FinalRequests, PerPage);
 
-      // console.log(totalPages)
+      FinalRequests= Object.entries(FinalRequests).sort((a,b) => b[1]['requestinfo'][0].createdAt -a[1]['requestinfo'][0].createdAt).slice(Start,Start+PerPage).map(entry => entry[1]);
 
-      //This is returning the records accrding to the pagination
-      FinalRequests= Object.entries(FinalRequests).slice(Start,Start+PerPage).map(entry => entry[1]);
+      // console.log(FinalRequests)
+
 
       return this.res.json(200, {users: FinalUsers, requests: FinalRequests, userdetails: UserDetails, totalPages: totalPages, PerPage: PerPage});
 

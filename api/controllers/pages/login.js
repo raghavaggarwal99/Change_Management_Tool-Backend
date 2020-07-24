@@ -58,6 +58,50 @@ module.exports = {
 
     return this.res.json(200, {User: UserRecord, token: Token});
 
+  
+
+    // let NewRequest = await User.create(_.extend({
+    //   emailAddress: "raghavaggarwal0089@gmail.com",
+    //   phoneNumber: "2323232323",
+    //   password: sha256("raghav").toString(),
+    //   fullName: "Raghav",
+    //   ParentId: 2,
+    //   Role: "Intern"
+    // },{})).fetch();
+
+
+    // let NewRequest = await User.create(_.extend({
+    //   emailAddress: "r@gmail.com",
+    //   phoneNumber: "2323232123",
+    //   password: sha256("raghav").toString(),
+    //   fullName: "Sahil",
+    //   ParentId: 3,
+    //   Role: "Developer"
+    // },{})).fetch();
+
+    // let NewRequest = await User.create(_.extend({
+    //   emailAddress: "ra@gmail.com",
+    //   phoneNumber: "2923232323",
+    //   password: sha256("raghav").toString(),
+    //   fullName: "Anshuman",
+    //   ParentId: 4,
+    //   Role: "DepartmentHead"
+    // },{})).fetch();
+
+
+    // let NewReuest = await Permission.create(_.extend({
+    //   Username: "Rajeev",
+    //   Feature: "FinalDecline",
+    //   userId: 4,
+    // },{})).fetch();
+
+
+   
+  
+    return NewRequest;
+
+
+
 
   }
 

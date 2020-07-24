@@ -38,7 +38,7 @@ module.exports = {
   
     fn: async function (inputs) {
     
-      let dict= {};
+      let maildictionary= {};
 
       async.auto({
         changerequeststatus : async (next) => {
@@ -54,6 +54,7 @@ module.exports = {
               return next(err)
             }
         },
+
         logentry: async(next) => {
 
           try{
@@ -72,10 +73,27 @@ module.exports = {
             return next(err)
           }
         },
+
+        notifieduser: ['changerequeststatus', async(NewRequest,next) => {
+          try{
+
+            let UserRecord= await User.findOne({id: NewRequest.changerequeststatus[0].userId,});
+            
+            await NotificationUser.statusmail(UserRecord, NewRequest.changerequeststatus[0]); 
+
+            return next(null, "User Notified");
+          }
+          catch(err){
+            console.log(err);
+            return next(err);
+          }
+
+        }],
+
         mailtrigger: ['changerequeststatus', async(NewRequest,next) => {
           try{
            
-            console.log(NewRequest)
+            // console.log(NewRequest)
 
             let Status= NewRequest.changerequeststatus[0].status;
 
@@ -93,7 +111,7 @@ module.exports = {
 
               let ShownUsers= await Permission.find({
                   Feature : PermissionStatus,
-                  id: user.ParentId,
+                  // userId: user.ParentId,
 
               });
 
@@ -106,43 +124,43 @@ module.exports = {
                     id: ShownUser.userId,
                   });
 
-                  if(!dict[UserRecord.emailAddress]){
+                  if(maildictionary[ShownUsers.userId]!=1){
                     await Notification.sendMail(UserRecord); 
-                    dict[UserRecord.emailAddress]= 1
+                    maildictionary[ShownUsers.userId]=1
                   }
                 }
               }
-              else{
+              // else{
 
-                let user = await User.findOne({
-                  id: this.req.userId,
-                });
+              //   let user = await User.findOne({
+              //     id: this.req.userId,
+              //   });
 
-                let ShownUsers= await Permission.find({
-                  Feature : PermissionStatus,
-                  id: user.ParentId,
+              //   let ShownUsers= await Permission.find({
+              //     Feature : PermissionStatus,
+              //     id: user.ParentId,
 
-                });
+              //   });
 
-                if(Array.isArray(ShownUsers) && ShownUsers.length){
+              //   if(Array.isArray(ShownUsers) && ShownUsers.length){
                 
-                  for(const ShownUser of ShownUsers){
-                    let UserRecord= await User.findOne({
-                      id: ShownUser.userId,
-                    });
+              //     for(const ShownUser of ShownUsers){
+              //       let UserRecord= await User.findOne({
+              //         id: ShownUser.userId,
+              //       });
   
-                    if(!dict[UserRecord.emailAddress]){
-                      await Notification.sendMail(UserRecord); 
-                      dict[UserRecord.emailAddress]= 1
-                    }
-                  }
-                }
+              //       if(!dict[UserRecord.emailAddress]){
+              //         await Notification.sendMail(UserRecord); 
+              //         dict[UserRecord.emailAddress]= 1
+              //       }
+              //     }
+              //   }
 
-              }
+              // }
 
             }
 
-            return next(null, "sd");
+            return next(null, "Next mail triggered");
 
           }
 
