@@ -213,11 +213,12 @@ async function CreateRequest(inputs, UserId){
 
 async function LogEntry(NewRequestId, Status, UserId){
 
+  // let TimeStamp= await sails.helpers.gettimestamp.with({id: UserId})
   let Log = await Logs.create(_.extend({
     userId: UserId,
     RequestId : NewRequestId,
     Action: Status,
-    TimeStamp:  new Date()
+    TimeStamp:  await sails.helpers.gettimestamp.with({id: UserId})
   },{})).fetch();
 
 };

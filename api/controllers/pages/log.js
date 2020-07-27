@@ -49,14 +49,17 @@ module.exports = {
       }
 
       let UserDetails ={}
+      let RequestDetails ={}
 
       async.auto({
         fetchlogs:  async (next) => {
             try {
               let LogRecords=  await Logs.find({
                 where: query
-              }).skip(PageId).limit(PerPage);;
-             
+              }). sort([
+                { createdAt: 'DESC' },
+              ]).skip(PageId).limit(PerPage);
+           
               return next(null, LogRecords);
             }
             catch (err) {
@@ -64,6 +67,7 @@ module.exports = {
                 return next(err); 
             }
         },
+
         fetchnumberpages: async(next) => {
             try{
               let NumberOfLogs=  await Logs.count({where: query});
@@ -75,13 +79,17 @@ module.exports = {
               return next(err); 
             }
         },
+
         fetchuserdetails: ['fetchlogs', async(LogRecords, next) => {
 
           for(let log of LogRecords.fetchlogs){
-            UserDetails[log.userId]= await User.find({id: log.userId});
+            UserDetails[log.userId]= await User.find({id: log.userId})
+            RequestDetails[log.RequestId]= await Request.find({id: log.RequestId})
+            // console.log(UserDetails)
+           
           }
 
-          return next(null, UserDetails)
+          return next(null, UserDetails, RequestDetails)
 
         }],
 

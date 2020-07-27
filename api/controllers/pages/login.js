@@ -37,11 +37,9 @@ module.exports = {
   },
 
 
-  fn: async function (inputs) {
+  fn: async function () {
 
-    // Look up by the email address.
-
- 
+    let permission=0;
 
     let UserRecord = await User.findOne({
       emailAddress: inputs.EmailAddress,
@@ -52,12 +50,22 @@ module.exports = {
     if(!UserRecord) {
       throw 'badCombo';
     }
-    
+
+
+    permission= await Permission.find({
+      userId: UserRecord.id
+    })
+
+    if(Array.isArray(permission) && permission.length){
+      permission=1;
+    }
+
+
     Token= await sails.helpers.createjwttoken.with({id: UserRecord.id})
 
 
-    return this.res.json(200, {User: UserRecord, token: Token});
-
+    return this.res.json(200, {User: UserRecord, token: Token, permission: permission});
+  
   
 
     // let NewRequest = await User.create(_.extend({
@@ -66,7 +74,8 @@ module.exports = {
     //   password: sha256("raghav").toString(),
     //   fullName: "Raghav",
     //   ParentId: 2,
-    //   Role: "Intern"
+    //   Role: "Intern",
+    //   EmployeeId: 1,
     // },{})).fetch();
 
 
@@ -76,7 +85,8 @@ module.exports = {
     //   password: sha256("raghav").toString(),
     //   fullName: "Sahil",
     //   ParentId: 3,
-    //   Role: "Developer"
+    //   Role: "Developer",
+    //   EmployeeId: 2,
     // },{})).fetch();
 
     // let NewRequest = await User.create(_.extend({
@@ -85,20 +95,33 @@ module.exports = {
     //   password: sha256("raghav").toString(),
     //   fullName: "Anshuman",
     //   ParentId: 4,
-    //   Role: "DepartmentHead"
+    //   Role: "DepartmentHead",
+    //   EmployeeId: 3,
+    // },{})).fetch();
+
+    // let NewRequest = await User.create(_.extend({
+    //   emailAddress: "rajeev@gmail.com",
+    //   phoneNumber: "2923231323",
+    //   password: sha256("raghav").toString(),
+    //   fullName: "Rajeev",
+    //   ParentId: 0,
+    //   Role: "IT",
+    //   EmployeeId: 4,
     // },{})).fetch();
 
 
-    // let NewReuest = await Permission.create(_.extend({
-    //   Username: "Rajeev",
-    //   Feature: "FinalDecline",
-    //   userId: 4,
+
+    //  let NewRequest = await Access.create(_.extend({
+    //   Username: "Sahil",
+    //   Access: "New Laptop",
+    //   userId: 2,
+  
     // },{})).fetch();
 
 
    
   
-    return NewRequest;
+    // return NewRequest;
 
 
 

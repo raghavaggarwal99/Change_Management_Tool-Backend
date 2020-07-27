@@ -28,10 +28,9 @@ module.exports = {
     },
 
     description: {
-      type: 'string',
+      type: 'text',
       required: true,
       description: 'Description of the created request',
-      maxLength: 100,
       example: 'Pending'
     },
 

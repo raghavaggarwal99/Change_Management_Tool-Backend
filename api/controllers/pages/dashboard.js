@@ -12,6 +12,16 @@ module.exports = {
         required: true
       },
 
+      StatusFilter: {
+        description: 'The filters in array',
+        type: ['string'],
+      },
+
+      Requestfilter: {
+        description: 'The request filters in array',
+        type: ['string'],
+      }
+
     },
   
     exits: {
@@ -31,11 +41,22 @@ module.exports = {
 
     let PerPage= 5;
 
-    let PageId= inputs.PageId;
-    let Start=(PageId-1)*PerPage
+    let Query={}
+
+    Query['isDeleted']= 0
+      let PageId= inputs.PageId;
+      let Start=(PageId-1)*PerPage
+
+      if(Array.isArray(inputs.StatusFilter) && inputs.StatusFilter.length){
+        Query['status'] = inputs.StatusFilter;
+      }
+
+      if(Array.isArray(inputs.Requestfilter) && inputs.Requestfilter.length){
+        Query['info'] = inputs.Requestfilter;
+      }
 
       var RequestRecords = await Request.find({
-        isDeleted: 0,
+        where: Query,
       });
 
       //It contains Request Info and request Ids to show

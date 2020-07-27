@@ -12,6 +12,14 @@ module.exports = {
       //  ╠═╝╠╦╝║║║║║ ║ ║╚╗╔╝║╣ ╚═╗
       //  ╩  ╩╚═╩╩ ╩╩ ╩ ╩ ╚╝ ╚═╝╚═╝
   
+    EmployeeId: {
+        type: 'string',
+        required: true,
+        description: 'Empployee Id',
+        unique: true,
+        example: '101'
+    },
+
     emailAddress: {
         type: 'string',
         required: true,

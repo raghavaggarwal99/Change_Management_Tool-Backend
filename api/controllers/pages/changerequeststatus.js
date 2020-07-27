@@ -62,7 +62,7 @@ module.exports = {
               userId: this.req.userId,
               RequestId: inputs.RequestId,
               Action: inputs.Status,
-              TimeStamp:  new Date()
+              TimeStamp:  await sails.helpers.gettimestamp.with({id: this.req.userId})
             },{}))
             .fetch();
 

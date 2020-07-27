@@ -45,7 +45,9 @@ module.exports = {
       PageId=(PageId-1)*PerPage;
 
 
-      let UserRecords= await User.find();
+      let UserRecords= await User.find().sort([
+        { fullName: 'ASC' },
+      ]);
 
       let AccessRecords= {};
 
@@ -55,9 +57,12 @@ module.exports = {
       if(Array.isArray(inputs.accessfilter) && inputs.accessfilter.length){
 
           query['Access'] = inputs.accessfilter;
+          
           AccessRecords= await Access.find({
             where: query
-          }).skip(PageId).limit(PerPage);;
+          }).sort([
+            { Username: 'ASC' },
+          ]).skip(PageId).limit(PerPage);;
 
           for (const AccessRecord of AccessRecords){
             AccessObject[AccessRecord.userId] = new Array();
@@ -65,9 +70,12 @@ module.exports = {
       }
       else{
 
-          AccessRecords= await Access.find();
+          AccessRecords= await Access.find().sort([
+            { Username: 'ASC' },
+          ]);
 
           for (const UserRecord of UserRecords){ 
+            console.log()
             AccessObject[UserRecord.id] = new Array();
           }
 
@@ -80,6 +88,8 @@ module.exports = {
         }
 
       }
+
+      console.log(AccessObject)
 
       for (const AccessRecord of AccessRecords){
         if(AccessObject[AccessRecord.userId]){
