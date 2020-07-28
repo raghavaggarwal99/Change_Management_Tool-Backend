@@ -45,9 +45,8 @@ module.exports = {
       PageId=(PageId-1)*PerPage;
 
 
-      let UserRecords= await User.find().sort([
-        { fullName: 'ASC' },
-      ]);
+      let UserRecords= await User.find();
+
 
       let AccessRecords= {};
 
@@ -60,9 +59,7 @@ module.exports = {
           
           AccessRecords= await Access.find({
             where: query
-          }).sort([
-            { Username: 'ASC' },
-          ]).skip(PageId).limit(PerPage);;
+          }).skip(PageId).limit(PerPage);;
 
           for (const AccessRecord of AccessRecords){
             AccessObject[AccessRecord.userId] = new Array();
@@ -70,13 +67,11 @@ module.exports = {
       }
       else{
 
-          AccessRecords= await Access.find().sort([
-            { Username: 'ASC' },
-          ]);
+          AccessRecords= await Access.find();
 
           for (const UserRecord of UserRecords){ 
-            console.log()
-            AccessObject[UserRecord.id] = new Array();
+            // console.log(UserRecord)
+              AccessObject[UserRecord.id] = new Array();
           }
 
       }
@@ -89,7 +84,7 @@ module.exports = {
 
       }
 
-      console.log(AccessObject)
+      // console.log(AccessObject)
 
       for (const AccessRecord of AccessRecords){
         if(AccessObject[AccessRecord.userId]){
@@ -97,11 +92,29 @@ module.exports = {
         }
       }
 
+    
+
+      //Sorting
+      AccessObject= Object.entries(AccessObject).sort((a, b) => {
+
+        let fa = a[1][0].fullName.toLowerCase(),
+            fb = b[1][0].fullName.toLowerCase();
+    
+        if (fa < fb) {
+            return -1;
+        }
+        if (fa > fb) {
+            return 1;
+        }
+        return 0;
+    }).map(entry => entry[1]);
+
+
       finalrecords.push(AccessObject);
 
+      // console.log(finalrecords)
       
       return this.res.json(200, {userdetails: finalrecords,  itemsforpage: PerPage});
-  
   
     }
   

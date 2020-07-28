@@ -37,7 +37,7 @@ module.exports = {
   },
 
 
-  fn: async function () {
+  fn: async function (inputs) {
 
     let permission=0;
 
