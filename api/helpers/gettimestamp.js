@@ -42,7 +42,7 @@ module.exports = {
 
     today = dd + '/' + mm + '/' + yyyy; 
 
-    console.log(today+'-'+ time)
+    // console.log(today+'-'+ time)
 
     return today+'-'+ time
 

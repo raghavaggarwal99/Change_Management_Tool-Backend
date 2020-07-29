@@ -130,7 +130,7 @@ module.exports = {
 
             // let Status= await NewRequest.createnewrequest[0].status;
 
-            console.log(RequestDetails.status)
+            // console.log(RequestDetails.status)
 
             let user = await User.findOne({
               id: NewRequest.createnewrequest[0].userId,
@@ -146,7 +146,7 @@ module.exports = {
 
               let PermissionStatus= StatusRecord.finalstatus;
 
-              console.log(PermissionStatus)
+              // console.log(PermissionStatus)
 
               let ShownUsers= await Permission.find({
                   Feature : PermissionStatus,
@@ -154,7 +154,7 @@ module.exports = {
 
               });
 
-              console.log(ShownUsers);
+              // console.log(ShownUsers);
 
               if(Array.isArray(ShownUsers) && ShownUsers.length){
                 

@@ -90,6 +90,36 @@ module.exports = {
 
         }],
 
+        checkITApproved: ['changerequeststatus', async(NewRequest,next) => {
+          try{
+
+            let Status= NewRequest.changerequeststatus[0].status;
+
+            if(Status=="FinalApprove"){
+
+              console.log(Status)
+
+              let user = await User.findOne({
+                id: NewRequest.changerequeststatus[0].userId,
+              });
+
+                let NewAccess = await Access.create(_.extend({
+                  Username: user.fullName,
+                  Access: NewRequest.changerequeststatus[0].info,
+                  userId: NewRequest.changerequeststatus[0].userId,
+              
+                },{})).fetch();
+            }
+      
+            return next(null, "Access Added");
+          }
+          catch(err){
+            console.log(err);
+            return next(err);
+          }
+
+        }],
+
         mailtrigger: ['changerequeststatus', async(NewRequest,next) => {
           try{
            
@@ -115,7 +145,7 @@ module.exports = {
 
               });
 
-              console.log(ShownUsers);
+              // console.log(ShownUsers);
 
               if(Array.isArray(ShownUsers) && ShownUsers.length){
                 
