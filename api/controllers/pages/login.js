@@ -51,7 +51,6 @@ module.exports = {
       throw 'badCombo';
     }
 
-
     permission= await Permission.find({
       userId: UserRecord.id
     })
@@ -66,63 +65,6 @@ module.exports = {
 
     return this.res.json(200, {User: UserRecord, token: Token, permission: permission});
   
-  
-
-    // let NewRequest = await User.create(_.extend({
-    //   emailAddress: "raghavaggarwal0089@gmail.com",
-    //   phoneNumber: "2323232323",
-    //   password: sha256("raghav").toString(),
-    //   fullName: "Raghav",
-    //   ParentId: 2,
-    //   Role: "Intern",
-    //   EmployeeId: 1,
-    // },{})).fetch();
-
-
-    // let NewRequest = await User.create(_.extend({
-    //   emailAddress: "r@gmail.com",
-    //   phoneNumber: "2323232123",
-    //   password: sha256("raghav").toString(),
-    //   fullName: "Sahil",
-    //   ParentId: 3,
-    //   Role: "Developer",
-    //   EmployeeId: 2,
-    // },{})).fetch();
-
-    // let NewRequest = await User.create(_.extend({
-    //   emailAddress: "ra@gmail.com",
-    //   phoneNumber: "2923232323",
-    //   password: sha256("raghav").toString(),
-    //   fullName: "Anshuman",
-    //   ParentId: 4,
-    //   Role: "DepartmentHead",
-    //   EmployeeId: 3,
-    // },{})).fetch();
-
-    // let NewRequest = await User.create(_.extend({
-    //   emailAddress: "rajeev@gmail.com",
-    //   phoneNumber: "2923231323",
-    //   password: sha256("raghav").toString(),
-    //   fullName: "Rajeev",
-    //   ParentId: 0,
-    //   Role: "IT",
-    //   EmployeeId: 4,
-    // },{})).fetch();
-
-
-
-    //  let NewRequest = await Access.create(_.extend({
-    //   Username: "Sahil",
-    //   Access: "New Laptop",
-    //   userId: 2,
-  
-    // },{})).fetch();
-
-
-   
-  
-    // return NewRequest;
-
 
 
 
